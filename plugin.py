@@ -58,10 +58,20 @@ def build_token_tutorial(token_url: str) -> str:
 3. 点击帖子中的链接即可获取 token"""
 
 
+# token 等同于登录凭证：只有被识别为指令的消息不会进入大模型上下文，所以引导用户私聊、单独发指令
+BIND_NOTICE = (
+    "绑定注意：token 等同于账号登录凭证。\n"
+    "请私聊机器人，单独发一条「/森空岛绑定 <token>」，前面不要加别的字，不要用回复或引用；"
+    "不要在群里发，也不要转发含 token 的聊天记录，否则 token 会被群友看到，或作为聊天内容发给大模型。"
+)
+
+
 def build_help_text(token_url: str) -> str:
     """构造帮助/固定回复文案（链接来自配置）。"""
     return (
         build_token_tutorial(token_url)
+        + "\n\n"
+        + BIND_NOTICE
         + "\n\n可用指令：\n"
         "/森空岛 或 /森空岛帮助 —— 显示帮助与 token 获取教程\n"
         "/森空岛绑定 <token> —— 绑定 token（支持完整 JSON 或纯 Base64 字符串；多个账号分别绑定即可）\n"
@@ -73,7 +83,8 @@ def build_help_text(token_url: str) -> str:
         "/森空岛定时 <时间> —— 设置自动签到时间（仅超级管理员，如：6点30分）\n"
         "/森空岛签到信息 —— 查看所有用户签到状态（仅超级管理员）\n"
         "/森空岛自动签到测试 —— 立即执行一次自动签到（仅超级管理员）\n\n"
-        "也可以直接对机器人说「森空岛怎么用 / 帮我绑定 / 帮我签到」，机器人会调用对应工具处理。"
+        "也可以直接对机器人说「森空岛怎么用 / 帮我签到」，机器人会调用对应工具处理；"
+        "绑定请用上面的指令，不要在对话里直接发 token。"
     )
 
 
@@ -1291,7 +1302,8 @@ class SklandSignPlugin(MaiBotPlugin):
                 "链接作用：{purpose}\n"
                 "{link_note}。\n"
                 "获取步骤：使用浏览器打开链接 → 跳转到森空岛登录并登录 → "
-                "点击帖子中的链接即可获取 token。\n\n"
+                "点击帖子中的链接即可获取 token。\n"
+                "回答时务必提醒用户：{notice}不要把 token 直接发在对话里让你代为绑定。\n\n"
                 "可用指令：\n"
                 "/森空岛绑定 <token> —— 绑定 token（有多个森空岛账号时分别绑定）\n"
                 "/森空岛账号 —— 查看已绑定的账号及序号\n"
@@ -1299,7 +1311,7 @@ class SklandSignPlugin(MaiBotPlugin):
                 "/森空岛签到 —— 为全部账号手动签到\n"
                 "/森空岛状态 —— 查看全部账号的今日签到状态\n"
                 "/森空岛自动签到 —— 开启 / 关闭自动签到"
-            ).format(url=token_url, purpose=TOKEN_URL_PURPOSE, link_note=link_note),
+            ).format(url=token_url, purpose=TOKEN_URL_PURPOSE, link_note=link_note, notice=BIND_NOTICE.replace("\n", "")),
             "token_url": token_url,
             "token_url_purpose": TOKEN_URL_PURPOSE,
             "link_sent_to_user": link_sent,

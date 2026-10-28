@@ -9,6 +9,7 @@
 - LLM 工具 `skland_sign_in` / `skland_sign_status` 返回每个账号的结果（`accounts` 字段）；`skland_bind_token` 支持追加账号。
 - **数据格式**：`users.json` 每个用户改为 `{"auto_sign", "accounts": [{"token", "nickname", "role_uids"}]}`，并在顶层镜像第一个账号的 `token` / `nickname`，降级回 1.1.x 时仍可签到第一个账号。1.1.x 单账号格式与纯字符串旧格式在加载时自动转换；后台补全任务同时补齐旧账号的 `role_uids`。
 - `users.json` 写入时对已存在的文件也显式收紧为 0o600（此前 `os.open` 的 mode 只对新建文件生效）。
+- 帮助（`/森空岛` 与 `skland_help` 工具）增加绑定安全提示：私聊单独发送绑定指令，不在群里发、不转发含 token 的聊天记录；帮助不再引导用对话方式绑定。README 新增「绑定 token 的注意事项」。
 - `plugin.config_version` 同步为 `1.2.0`（配置结构无变更）。
 
 ## [1.1.3] - 2026-09-29 安全与权限加固

@@ -47,6 +47,8 @@
 
 > 工具仅「明确要求」时调用；只分享链接不提要求则不调用（见 Tool description 约束）。
 
+> 通过对话让机器人绑定时，模型必须看到 token 才能调用 `skland_bind_token`，token 会发给模型服务商。建议私聊单独发送 `/森空岛绑定 <token>` 指令，详见 README「绑定 token 的注意事项」。
+
 ## token 获取链接约定
 
 token 获取采用**链接方案**（不再使用二维码）：
